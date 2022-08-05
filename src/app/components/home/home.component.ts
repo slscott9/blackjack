@@ -47,7 +47,6 @@ export class HomeComponent implements OnInit {
     return Math.floor(Math.random() * max);
   }
 
-
   incremnetDeckCount() {
     if(this.deckCount === 52) {
       this.deckCount = 1;
@@ -56,7 +55,6 @@ export class HomeComponent implements OnInit {
       this.deckCount += 1
     }
   }
-
 
   addPlayerCard() {
     this.playerCards.push(this.cards[this.deckCount]);
@@ -68,7 +66,6 @@ export class HomeComponent implements OnInit {
     this.incremnetDeckCount(); //needs work since last card will shuffle automatically
   }
 
-
   togglePlayerCardCount() {
     this.showPlayerCardCount = !this.showPlayerCardCount
   }
@@ -76,16 +73,6 @@ export class HomeComponent implements OnInit {
   toggleDealerCardCount() {
     this.showDealerCardCount = !this.showDealerCardCount
   }
-
-  // calculatePlayerCardCount() {
-  //   let playerCardCount = 0;
-
-  //   for(let i = 0; i < this.playerCards.length; i++) {
-  //     playerCardCount += this.playerCards[i].cardValue
-  //   }
-
-  //   return playerCardCount;
-  // }
 
   calculateCardCount(card: Card[]) {
     let cardCount = 0;
@@ -95,6 +82,12 @@ export class HomeComponent implements OnInit {
     }
 
     return cardCount;
+  }
+
+
+
+  calculateWinner() {
+    
   }
 
 

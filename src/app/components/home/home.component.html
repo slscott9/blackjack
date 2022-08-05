@@ -1,4 +1,13 @@
 <div>
+
+
+<!-- 
+
+    <div *ngFor="let card of cards;">
+        {{card.cardValue}}
+        <img src="{{card.cardName}}">
+    </div> -->
+
     <div class="row">
         <div class="col">
             <app-nav-bar></app-nav-bar>
@@ -15,13 +24,13 @@
 
     <div class="row mb-5">
         <div *ngFor="let card of dealerCards; let i = index;" class="col d-flex justify-content-center">
-            <img src="{{card.cardName}}">
+            <img src="{{card.cardName}}" [ngClass]="{'right-transition' : i === dealerCards.length -1}">
         </div>
 
         <div class="col-2 ">
             <div class="row">
                 <div class="col">
-                    <button class="btn btn-primary mt-5" (click)="addDealerCard()">
+                    <button class="btn btn-danger mt-5" (click)="addDealerCard()">
                         Hit
                     </button>
                 </div>
@@ -33,7 +42,7 @@
                         {{calculateCardCount(dealerCards)}}
                     </div>
 
-                    <button class="btn btn-primary mt-2" (click)="toggleDealerCardCount()">
+                    <button class="btn btn-danger mt-2" (click)="toggleDealerCardCount()">
                         Show dealer card count
                     </button>
                 </div>
@@ -43,11 +52,11 @@
 
 
     <div class="row mt-5">
-        <div *ngFor="let card of playerCards" class="col d-flex justify-content-center mt-5">
-            <img src="{{card.cardName}}">
+        <div *ngFor="let card of playerCards; let i = index;" class="col d-flex justify-content-center mt-5">
+            <img src="{{card.cardName}}" [ngClass]="{'right-transition' : i === playerCards.length -1}">
         </div>
 
-        <div class="col-2 ">
+        <div class="col-2 align-self-end">
             <div class="row">
                 <div class="col">
                     <button class="btn btn-primary mt-5" (click)="addDealerCard()">
