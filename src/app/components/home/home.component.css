@@ -4,6 +4,10 @@
     animation-delay: 0;
 }
 
+.info-message {
+  font-size: 24px;
+  font-weight: 600;
+}
 
 @keyframes left {
     0% {

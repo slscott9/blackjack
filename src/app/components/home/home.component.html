@@ -1,13 +1,4 @@
-<div>
-
-
-    <!-- 
-
-    <div *ngFor="let card of cards;">
-        {{card.cardValue}}
-        <img src="{{card.cardName}}">
-    </div> -->
-
+<div class="container-fluid">
     <div class="row">
         <div class="col">
             <app-nav-bar></app-nav-bar>
@@ -17,80 +8,121 @@
 
     <div class="row">
         <div class="col">
-            {{deckCount}}
+            Cards dealt {{deckCount}}
         </div>
     </div>
 
-    <!--DEALER-->
-    <div class="row mb-5">
-        <div *ngFor="let card of dealerCards; let i = index;" class="col d-flex justify-content-center">
-            <img src="{{card.cardName}}" [ngClass]="{'right-transition' : i === dealerCards.length -1}">
-            <!-- <div class="cardFront" [ngClass]="{'right-transition' : i === dealerCards.length -1}">Back</div> -->
+    <div class="row">
+        <div class="col-2">
+            <button class="btn btn-primary" (click)="toggleCardCount()">
+                Card count
+            </button>
         </div>
-
-        <!-- <div class="card" (click)="handleFlip()">
-            <div #back id="back" class="cardBack">Back</div>
-            <div #front id="front" class="cardFront">Front</div>
-        </div> -->
-
-        <div class="col-2 ">
-            <div class="row">
-                <div class="col">
-                    <button class="btn btn-danger mt-5" (click)="addDealerCard()">
-                        Hit
-                    </button>
-                </div>
-                <div class="col">
-                    <button class="btn btn-danger mt-5" (click)="dealCards()">
-                        Deal cards
-                    </button>
-                </div>
-            </div>
-
-            <div class="row mt-5">
-                <div class="col">
-                    <div *ngIf="showDealerCardCount === true">
-                        {{calculateCardCount(dealerCards)}}
-                    </div>
-
-                    <button class="btn btn-danger mt-2" (click)="toggleDealerCardCount()">
-                        Show dealer card count
-                    </button>
-                </div>
-            </div>
+        <div class="col-2" *ngIf="showCardCount === true">
+            Cards count {{getCardCount()}}
         </div>
     </div>
 
-    <!--PLAYER-->
-    <div class="row mt-5">
-        <div *ngFor="let card of playerCards; let i = index;" class="col d-flex justify-content-center mt-5">
-            <img src="{{card.cardName}}" [ngClass]="{'right-transition' : i === playerCards.length -1}">
-        </div>
 
-        <div class="col-2 align-self-end">
-            <div class="row">
+    <div class="row">
+        <div class="col-12 ">
+            <!--DEALER-->
+            <div class="row mt-5 " *ngIf="this.dealerWinMessage !== ''">
+                <div class="col info-message d-flex justify-content-center" [ngClass]="this.dealerWinMessage.includes('Hit') === true ? 'text-success' : 'text-danger'">
+                    Dealer {{this.dealerWinMessage}}
+                </div>
+            </div>
+            <div class="row mt-4">
                 <div class="col">
-                    <button class="btn btn-primary mt-5" (click)="addDealerCard()">
-                        Stay
-                    </button>
+                    <div class="row d-flex justify-content-center">
+                        <div class="col-2" *ngFor="let card of dealerCards; let i = index;">
+                            <img src="{{card.cardName}}" [ngClass]="{'right-transition' : i === dealerCards.length -1}">
+                        </div>
+                    </div>
                 </div>
 
-                <div class="col">
-                    <button class="btn btn-primary mt-5" (click)="addPlayerCard()">
-                        Hit
-                    </button>
+                <div class="col-2 align-self-center">
+                    <div class="row">
+                        <div class="col">
+                            <button class="btn btn-warning" (click)="dealCards()">
+                                Deal
+                            </button>
+                        </div>
+                        <div class="col">
+                            <button class="btn btn-success w-100" (click)="addDealerCard()">
+                                Hit
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row mt-5">
+                        <div class="col">
+                            <div class="info-message" *ngIf="showDealerCardCount === true">
+                                {{calculateHandCount(dealerCards)}}
+                            </div>
+
+                            <button class="btn btn-danger mt-2" (click)="toggleDealerCardCount()">
+                                Dealer card count
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="row mt-5">
-                <div class="col">
-                    <div *ngIf="showPlayerCardCount === true">
-                        {{calculateCardCount(playerCards)}}
+            <!--PLAYER-->
+            <div class="row mt-5 ">
+                <div class="row mt-5" *ngIf="this.playerWinMessage !== ''">
+                    <div class="col info-message d-flex justify-content-center text-success" [ngClass]="this.playerWinMessage.includes('Hit') === true ? 'text-success' : 'text-danger'">
+                        Player {{this.playerWinMessage}}
+                    </div>
+                </div>
+                <div class="col mt-4">
+                    <div class="row d-flex justify-content-center">
+                        <div class="col-2" *ngFor="let card of playerCards; let i = index;">
+                            <img src="{{card.cardName}}" [ngClass]="{'right-transition' : i === playerCards.length -1}">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-2 align-self-center">
+                    <div class="row">
+                        <div class="col">
+                            <button class="btn btn-warning mt-5" (click)="addDealerCard()">
+                                Stay
+                            </button>
+                        </div>
+
+                        <div class="col">
+                            <button class="btn btn-success mt-5 w-100" (click)="addPlayerCard()">
+                                Hit
+                            </button>
+                        </div>
                     </div>
 
-                    <button class="btn btn-primary mt-2" (click)="togglePlayerCardCount()">
-                        Show player card count
-                    </button>
+                    <div class="row mt-5">
+                        <div class="col">
+                            <div class="info-message" *ngIf="showPlayerCardCount === true">
+                                {{calculateHandCount(playerCards)}}
+                            </div>
+
+                            <button class="btn btn-primary mt-2" (click)="togglePlayerCardCount()">
+                                Player card count
+                            </button>
+                        </div>
+                    </div>
+                    <div class="mt-5">
+                        <div class="row" *ngIf="showPerfectStrat === true">
+                            <div class="col info-message">
+                                {{getPerfectStrategy(playerCards)}}
+                            </div>
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col">
+                                <button class="btn btn-primary" (click)="togglePerfectStrat()">
+                                    Perfect Strategy
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

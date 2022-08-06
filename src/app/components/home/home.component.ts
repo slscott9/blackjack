@@ -1,5 +1,8 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Card, cards } from 'src/app/interfaces/types';
+import { GameUtilityService } from 'src/app/services/utility/game/game-utility.service';
+import { PerfectStrategyUtilityService } from 'src/app/services/utility/perfect-strategy/perfect-strategy-utility.service';
+import { PerfectStrategyComponent } from '../perfect-strategy/perfect-strategy.component';
 declare var $: any
 
 @Component({
@@ -17,8 +20,17 @@ export class HomeComponent implements OnInit, AfterViewInit {
   dealerCards: Card[] = [];
   playerCards: Card[] = [];
 
+  playerWinMessage: string = ''
+  dealerWinMessage: string = ''
+
   showPlayerCardCount: boolean = false;
   showDealerCardCount: boolean = false;
+  showCardCount: boolean = false;
+
+  cardCount: number = 0;
+
+  perfectStratMessage: string = ''
+  showPerfectStrat: boolean = false;
 
   @ViewChild('front')
   front!: ElementRef;
@@ -27,21 +39,17 @@ export class HomeComponent implements OnInit, AfterViewInit {
   back!: ElementRef;
 
 
-  constructor() { }
+  constructor(
+    private perfectStrategyUtility: PerfectStrategyUtilityService
+  ) { 
+  }
 
   ngOnInit(): void {
     this.shuffle()
-    this.dealCards()
-
-    // this.addPlayerCard();
-    // this.incremnetDeckCount();
-    // this.addDealerCard();
-    // this.incremnetDeckCount();
-    // this.addDealerCard();
+    this.startGame()
   }
 
   ngAfterViewInit(): void {
-    // this.handleFlip()
   }
 
   reset() {
@@ -68,17 +76,22 @@ export class HomeComponent implements OnInit, AfterViewInit {
       this.shuffle();
     } else {
       this.deckCount += 1
+      this.calculateCount(this.cards[this.deckCount])
     }
   }
 
   addPlayerCard() {
+    this.perfectStratMessage = ''
     this.incremnetDeckCount(); //needs work since last card will shuffle automatically
     this.playerCards.push(this.cards[this.deckCount]);
+    this.playerWinMessage = this.determineWinner(this.playerCards)
+
   }
 
   addDealerCard() {
     this.incremnetDeckCount(); //needs work since last card will shuffle automatically
     this.dealerCards.push(this.cards[this.deckCount]);
+    this.dealerWinMessage = this.determineWinner(this.dealerCards)
   }
 
   togglePlayerCardCount() {
@@ -89,7 +102,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.showDealerCardCount = !this.showDealerCardCount
   }
 
-  calculateCardCount(card: Card[]) {
+  calculateHandCount(card: Card[]) {
     let cardCount = 0;
 
     for (let i = 0; i < card.length; i++) {
@@ -99,25 +112,32 @@ export class HomeComponent implements OnInit, AfterViewInit {
     return cardCount;
   }
 
-  dealCards() {
-    this.playerCards = []
-    this.dealerCards = []
+  startGame() {
     this.deckCount += 1
+    this.calculateCount(this.cards[this.deckCount])
     this.playerCards.push(this.cards[this.deckCount])
     this.deckCount += 1
+    this.calculateCount(this.cards[this.deckCount])
     this.dealerCards.push(this.cards[this.deckCount])
     this.deckCount += 1
+    this.calculateCount(this.cards[this.deckCount])
     this.playerCards.push(this.cards[this.deckCount])
-    // this.deckCount += 1
-    // this.dealerCards.push(this.cards[this.deckCount])
-    // this.cardsDealt = true;
-    // this.handleFlip()
   }
 
-
-
-  calculateWinner() {
-
+  dealCards() {
+    this.playerCards = []
+    this.dealerCards = []   
+    this.deckCount += 1
+    this.calculateCount(this.cards[this.deckCount])
+    this.playerCards.push(this.cards[this.deckCount])
+    this.deckCount += 1
+    this.calculateCount(this.cards[this.deckCount])
+    this.dealerCards.push(this.cards[this.deckCount])
+    this.deckCount += 1
+    this.calculateCount(this.cards[this.deckCount])
+    this.playerCards.push(this.cards[this.deckCount])
+    this.dealerWinMessage = ''
+    this.playerWinMessage = ''
   }
 
   handleFlip() {
@@ -125,6 +145,54 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.back?.nativeElement.classList.toggle('flipped')
   }
 
+  determineWinner(cards: Card[]): string {
+    let cardCount = this.calculateHandCount(cards);
+
+    switch(true) {
+      case cardCount === 21: {
+          return 'Hit 21'
+        break;
+      }
+      case cardCount > 21: {
+          return `Bust ${cardCount}`
+        break;
+      }
+      default: return ''
+    }
+
+  }
+
+  getPerfectStrategy(cards: Card[]) {
+    return this.perfectStrategyUtility.determinePerfectStrat(cards)
+
+  }
+
+  togglePerfectStrat() {
+    this.showPerfectStrat = !this.showPerfectStrat
+  }
+
+
+  toggleCardCount() {
+    this.showCardCount = !this.showCardCount;
+  }
+
+
+  calculateCount(card: Card) {
+    switch(true) {
+      case card.cardName.includes('ace') || card.cardValue === 10: {
+        this.cardCount -= 1;
+        break;
+      }
+      case card.cardValue >= 2 && card.cardValue < 6: {
+        this.cardCount += 1
+        break;
+      }
+    }
+  }
+
+  getCardCount() {
+    return this.cardCount
+  }
 
 
 
